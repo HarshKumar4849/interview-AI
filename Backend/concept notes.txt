@@ -1,0 +1,347 @@
+middle ware
+imagine ordering food through a waiter:
+customer: you (client)
+waiter: MiddleWare
+kitchen: Server/database
+
+the waiter takes your order to the kitchen and bring the food back.Similarly, MiddleWare receives request, processes it if needed,passes it to the server, and returns the response
+
+client request   ---->     MiddleWare      ---->    Application/server     ----> client response
+[client will send      [middle ware will         [and go to server to check     [and at the last it will send
+                                                                                 response to the client]
+                                                 in server as per demand]
+                      take that request]
+the request]
+
+common use of MiddleWare
+authentication-> check if a user is logged in.
+authorization-> verifies whether the user has permission to access a resource 
+etc.
+
+what require keyword do?
+require keyword is used to import code from another file or packages so you can use it in your current file .
+
+what server.js file do?
+User
+   │
+   ▼
+server.js starts
+   │
+   ├── Loads .env
+   │
+   ├── Connects Database
+   │
+   ├── Creates Express app
+   │
+   ├── Loads middleware
+   │
+   ├── Loads routes
+   │
+   └── Starts listening on port 3000
+                     │
+                     ▼
+          User sends request
+                     │
+                     ▼
+             Express receives it
+                     │
+                     ▼
+              Middleware runs
+                     │
+                     ▼
+              Correct route found
+                     │
+                     ▼
+              Controller executes
+                     │
+                     ▼
+              Database queried
+                     │
+                     ▼
+              Response returned
+
+why to use bcrypt?
+                ANS:
+What happens if we DON'T hash the password?
+Suppose a user signs up with:
+
+Email: harsh@gmail.com
+Password: harsh123
+
+If you store it directly in MongoDB:
+
+{
+  "email": "harsh@gmail.com",
+  "password": "harsh123"
+}
+
+Imagine someone hacks your database.
+
+They can immediately see:
+
+harsh123
+
+Every user's password becomes visible.
+
+Instead, we hash the password
+
+Before saving it, we use a library like bcrypt.
+
+const bcrypt = require("bcryptjs");
+
+const hashedPassword = await bcrypt.hash(password, 10);
+
+Now the database stores something like:
+
+{
+  "email": "harsh@gmail.com",
+  "password": "$2b$10$wV3xgD7Qv8lP9..."
+}
+
+This random-looking string is the hash.
+
+Even if someone sees it, they cannot know the original password.
+
+                        EVERY THING ABOUT JWT , SECRETE KEY 
+Imagine there is no JWT
+
+A user logs in.
+
+Email: harsh@gmail.com
+Password: harsh123
+
+You verify the password.
+
+Now the question is:
+
+How will the server remember that this user is logged in?
+
+Suppose the user now opens:
+
+GET /profile
+
+How does the server know this request is from Harsh?
+
+HTTP requests are stateless, meaning every request is independent. The server forgets who made the previous request unless you send some proof.
+
+JWT solves this problem
+
+After successful login, the server creates a token.
+
+const token = jwt.sign(
+    { id: user._id, username: user.username },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+)
+
+This token is like a digital identity card.
+
+The server gives it to the client.
+
+Server
+   │
+   ▼
+Creates JWT
+   │
+   ▼
+Sends it to browser
+
+The browser stores it (usually in a cookie or local storage).
+
+What is inside a JWT?
+
+Your code creates:
+
+{
+    id: user._id,
+    username: user.username
+}
+
+Suppose
+
+id = 6892abcd123
+username = Harsh
+
+The JWT contains this information (plus some metadata) in a signed format.
+
+It looks something like:
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+It is not encrypted. Anyone who has the token can decode its contents, but they cannot change it without invalidating the signature.
+
+What is JWT_SECRET?
+process.env.JWT_SECRET
+
+This is a secret key known only to your server.
+
+Example:
+
+JWT_SECRET=mySuperSecretKey123
+
+Node uses it to digitally sign the token.
+
+If someone changes the token, the signature no longer matches, and the server rejects it.
+
+Login flow
+Step 1
+
+User logs in.
+
+Email
+Password
+
+↓
+
+Step 2
+
+Server checks password.
+
+↓
+
+Step 3
+
+Password is correct.
+
+↓
+
+Step 4
+
+Generate JWT.
+
+const token = jwt.sign(...)
+
+↓
+
+Step 5
+
+Send token to browser.
+
+{
+    token: "eyJhbGc..."
+}
+Later...
+
+The user requests:
+
+GET /profile
+
+The browser sends the token back.
+
+Authorization: Bearer eyJhbGc...
+
+or as a cookie.
+
+The server verifies it.
+
+jwt.verify(token, process.env.JWT_SECRET)
+
+If valid:
+
+User is authenticated ✅
+What does jwt.sign() do?
+jwt.sign(
+    payload,
+    secret,
+    options
+)
+
+In your code:
+
+jwt.sign(
+    { id: user._id, username: user.username },
+    process.env.JWT_SECRET,
+    { expiresIn: "1d" }
+)
+First argument
+{
+    id: user._id,
+    username: user.username
+}
+
+The information you want inside the token.
+
+Second argument
+process.env.JWT_SECRET
+
+The secret used to sign the token.
+
+Third argument
+{
+    expiresIn: "1d"
+}
+
+Means
+
+This token expires after 1 day.
+
+After one day:
+
+Token Invalid
+
+The user must log in again.
+
+Why not send username and password with every request?
+
+Imagine every API call looked like this:
+
+GET /profile
+
+Email: harsh@gmail.com
+Password: harsh123
+
+Problems:
+
+Password travels over the network repeatedly.
+Higher risk if intercepted or logged.
+Poor user experience.
+
+Instead:
+
+GET /profile
+
+Token: eyJhbGc...
+
+The password is only used during login.
+
+Real-life analogy
+
+Think about going to a movie.
+
+Step 1
+
+You buy a ticket.
+
+The staff checks your payment.
+
+↓
+
+Step 2
+
+They give you a ticket.
+
+↓
+
+Step 3
+
+Every time you enter a hall, you show the ticket.
+
+They don't ask you to pay again.
+
+JWT works the same way.
+
+Password
+      │
+      ▼
+Server verifies
+      │
+      ▼
+Issues JWT (movie ticket)
+      │
+      ▼
+Browser stores JWT
+      │
+      ▼
+Future requests send JWT
+
+The token is your proof that you've already authenticated.

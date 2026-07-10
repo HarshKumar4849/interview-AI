@@ -1,0 +1,56 @@
+A-Z notes for frontend
+
+first we have to create frontend folder
+
+npm create vite@latest .(vite@latest . isse kya hoga ki jo hamara download hoga packages wo direct frontend folder k andar jayega)
+
+delete the css file and assets folder first and remove everything from app.jsx except the boiler plate
+
+create new file style.scss and write the basic css there
+
+import style.scss file in main.jsx and install package named as sass
+
+/login ,/register me pe kya dikhe ga uske lea package install kre ge react-router
+
+aab hame routes create karna hoga like /login to waha hame login form show kr rha hoga likewise same with /register
+uske lea we have to install package named as react-router
+
+ye jo routes wala code rehta hai isko alag file me likhte hai  named as app.routes.jsx and sara pages idhar hi import hota hai
+
+humlog feature based application bana rhe h like authentication related feature humlog auth folder me kre ge , ai related feature humlog ai folder me kre ge
+
+auth folder k andar bhi 2 chiz rhe ga ik pages folder and component folder 
+pages folder k andar pura code rahega like login page register page ka full code
+component folder k andar baar baar use hone wala code rahega like button banane ka code
+
+aab humne router create kr liya inside app.routes.jsx and agar isko use karna hai to app.jsx file me aana hoga 
+and import 2 things:
+import { RouterProvider } from "react-router"
+import { router } from "./app.routes"
+
+till here we have completed that at what router which page we have to show 
+and now we will design the actual ui of these pages
+
+from here we are done with the ui design and now it's time to connect frontend with backend
+
+4 Layers acrchitecture
+1)UI --> isme humlog batate hai ki user ko kya dikhe ga + navigate kaise handle karna hai
+it contains : -components , -pages
+2)HOOKS --> for managing STATES and API Layers
+3)STATES -->ye user k data ko manage karne ka kaam karta hai (i.e frontend pe user ka data ko store karne k lea)
+it contains : -auth.context.jsx , -ai.context.jsx
+4)API --> iska kaam hota hai ki hamara frontend backend se kaise communicate kre ga
+it contains : -auth.api.js
+iske lea humlog auth folder k andar services folder banai ge uske andar file banai ge auth.api.js
+iss file k andar wo code rahega jo frontend ko backend se connect kre ga
+
+frontend ko backend se communicate karne k lea ik package ka zarurat hota hai named as axios
+
+humlog loading ko dikhane k lea state layer ka use kre ge eg. jab tak data backend se aa rha h tab tak use ko loading dikhana 
+iske lea humlog ik file banai ge named as auth.context.jsx
+
+and now we will implement hook layer
+we will make folder named as hooks and create file named as useAuth.js
+
+humlog ik file banai ge protected.js
+kaam : agar user login hai tab hi usko home page me jane milega warna nhi milega

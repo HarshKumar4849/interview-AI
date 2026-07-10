@@ -1,0 +1,82 @@
+Two-Way Binding (React)
+Definition
+
+Two-way binding means the input field and the state are always synchronized.
+
+If the user changes the input, the state changes.
+If the state changes, the input also changes.
+
+So, data flows in both directions.
+
+Example
+const [name, setName] = useState("");
+
+<input
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+/>
+How it works
+
+Step 1: User types
+
+Harsh
+
+↓
+
+State becomes
+
+name = "Harsh"
+
+↓
+
+Input shows
+
+Harsh
+
+Step 2: Change the state
+
+setName("");
+
+↓
+
+State becomes
+
+name = ""
+
+↓
+
+Input automatically becomes empty.
+
+Flow
+User Types
+     │
+     ▼
+ Input Field
+     │
+     ▼
+    State
+     ▲
+     │
+State Updates
+     │
+     ▼
+ Input Updates
+Key Point
+
+Two-way binding in React is achieved using:
+
+value={state}
+
+and
+
+onChange={(e) => setState(e.target.value)}
+Real-Life Example
+
+Imagine a whiteboard and a notebook.
+
+If you write on the whiteboard, the notebook updates.
+If you erase the notebook, the whiteboard also gets erased.
+
+Both always have the same information.
+
+➡️ This is called Two-Way Binding.

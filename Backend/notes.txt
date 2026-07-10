@@ -1,0 +1,34 @@
+steps ( A - Z)
+1) npm init ----to initialise the project which is there in node module
+2) install the necessary packages like [npm i express mongoose(for mongo-db database) dotenv file(.env file k andar jo variable create karte hai unka access bhi hum de pay)]
+3) src folder banai ge 
+    - uske andar files banega 
+    - app.js--->iska mainly 2 kaam rehta hai 1)server ko iniciate karna 2)middle ware and jo bhi api create karte hai usko use karna 
+    - server.js---> ye server ko start karne ka kaam karta hai
+    - models---> iske andar user ka schema banega(like user ka kya kya data lena hai)
+    - routes---> to create api(api create karne k lea hum ye folder use karte hai) humlog ko api ka login controllers me likha hota hai yaha sirf api create karte hai
+    - auth related api creation we use auth.routes.js
+    -config----> server ko database se connect karne ka kaam rehta hai
+    using file database.js file we write code and connect it to the server with database 
+
+auth.controller.js me agar user exist karta hoga usko hum handle kr lea ... lekin agar user exist nhi karta hoga to kya kre ge 
+then we will create new user 
+             HOW?
+install some packages first :
+- bcryptjs : we will use this for hashing
+- jsonwebtoken : helps while creating jwt token
+- cookie-parse : helps to set token into cookie and to read cookie
+
+jWT SECRETE KEY GENERATE KARNE K LEA JWTSECRETS.COM PE JANA H
+
+
+jo humne 2 api banai hai i.e (registerUserController and loginUserController) usko test kre ge using PostMan
+
+humlog models k andar 1 file banai blacklist k naam se
+what it does?
+eg. you login to insta and there with your user name/id one token generated and if some one know your psw and logged in and msg some one with your id then it creates a problem and to manage this suppose you logged-out then this blacklist file contain your id 
+and again if someone try to login with your id then at first blacklist file check whether a username xyz is there in this file or not if there then give him a msg unauthorized access
+
+
+inside package.json we write :--> "dev": "npx nodemon server.js"
+isse kya hoga ki jab server run karna hoga to humlog ko npx nodemon server.js k badle npm run dev likhna hoga

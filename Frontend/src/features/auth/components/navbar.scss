@@ -1,0 +1,154 @@
+/* ==========================================================================
+   Global Navbar - Premium Styles
+   ========================================================================== */
+
+.app-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 40px;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  background: rgba(22, 27, 34, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  z-index: 100;
+  position: relative;
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    padding: 14px 20px;
+    border-radius: 12px;
+  }
+
+  @media (max-width: 520px) {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    border-radius: 12px;
+  }
+}
+
+/* Brand Section */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.navbar-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: #ffffff;
+  padding: 2px;
+}
+
+.navbar-brand {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ffffff 0%, #d1d5db 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Nav Actions Section */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  @media (max-width: 520px) {
+    width: 100%;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+}
+
+.navbar-user-welcome {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #8b949e;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding-right: 16px;
+
+  @media (max-width: 640px) {
+    display: none; /* Hide welcome text on smaller mobile screens */
+  }
+}
+
+/* Link Button */
+.navbar-link-btn {
+  background: none;
+  border: none;
+  color: #c9d1d9;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 8px 12px;
+
+  &:hover {
+    color: #ff2d78;
+  }
+}
+
+/* Button CTA */
+.navbar-btn {
+  padding: 10px 20px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.register-btn {
+  background: linear-gradient(135deg, #ff2d78 0%, #a78bfa 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(255, 45, 120, 0.25);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(255, 45, 120, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.logout-btn {
+  background: rgba(255, 255, 255, 0.04);
+  color: #f3f4f6;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.25);
+    color: #ff6b6b;
+  }
+
+  &:active {
+    background: rgba(239, 68, 68, 0.15);
+  }
+}
