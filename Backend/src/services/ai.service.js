@@ -52,6 +52,7 @@ function convertToGeminiSchema(jsonSchema) {
     return geminiSchema;
 }
 
+console.log("API key starts with:", process.env.GOOGLE_GENAI_API_KEY?.substring(0, 8));
 const ai = new GoogleGenAI({
     apiKey: process.env.GOOGLE_GENAI_API_KEY
 });
