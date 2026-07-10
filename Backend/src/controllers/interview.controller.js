@@ -23,9 +23,14 @@ async function generateInterviewReportController(req, res) {
         });
         res.status(200).json({ interviewReport });
     } catch (error) {
-        console.error("Error in generateInterviewReportController:", error);
-        res.status(500).json({ message: "Failed to generate report" });
-    }
+    console.error("========== FULL ERROR ==========");
+    console.error(error);
+
+    res.status(500).json({
+        message: error.message,
+        stack: error.stack
+    });
+}
 }
 
 async function getInterviewReportByIdController(req, res) {
@@ -83,4 +88,4 @@ module.exports = {
     getInterviewReportByIdController,
     getAllInterviewReportsController,
     generateResumePdfController
-};
+};
