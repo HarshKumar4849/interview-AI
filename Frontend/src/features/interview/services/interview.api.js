@@ -57,3 +57,11 @@ export const generateResumePdf = async ({ interviewReportId }) => {
 
     return response.data
 }
+
+/**
+ * @description Service to toggle a preparation roadmap task's completion.
+ */
+export const toggleTask = async ({ interviewId, taskId }) => {
+    const response = await api.patch(`/api/interview/report/${interviewId}/toggle-task`, { taskId })
+    return response.data
+}

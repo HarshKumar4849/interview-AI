@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate, useParams } from 'react-router'
@@ -15,8 +15,19 @@ const NAV_ITEMS = [
 // ── Sub-components ────────────────────────────────────────────────────────────
 const QuestionCard = ({ item, index }) => {
     const [ open, setOpen ] = useState(false)
+    const cardRef = useRef(null)
+
+    useEffect(() => {
+        if (open && cardRef.current) {
+            const timer = setTimeout(() => {
+                cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+            }, 150)
+            return () => clearTimeout(timer)
+        }
+    }, [ open ])
+
     return (
-        <div className='q-card'>
+        <div className='q-card' ref={cardRef}>
             <div className='q-card__header' onClick={() => setOpen(o => !o)}>
                 <span className='q-card__index'>Q{index + 1}</span>
                 <p className='q-card__question'>{item.question}</p>
@@ -24,7 +35,7 @@ const QuestionCard = ({ item, index }) => {
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9" /></svg>
                 </span>
             </div>
-            {open && (
+            <div className={`q-card__body-wrapper ${open ? 'q-card__body-wrapper--open' : ''}`}>
                 <div className='q-card__body'>
                     <div className='q-card__section'>
                         <span className='q-card__tag q-card__tag--intention'>Intention</span>
@@ -35,39 +46,67 @@ const QuestionCard = ({ item, index }) => {
                         <p>{item.answer}</p>
                     </div>
                 </div>
-            )}
+            </div>
         </div>
     )
 }
 
-const RoadMapDay = ({ day }) => (
-    <div className='roadmap-day'>
-        <div className='roadmap-day__header'>
-            <span className='roadmap-day__badge'>Day {day.day}</span>
-            <h3 className='roadmap-day__focus'>{day.focus}</h3>
+const RoadMapDay = ({ day, completedTasks, toggleTask, reportId }) => {
+    return (
+        <div className='roadmap-day'>
+            <div className='roadmap-day__header'>
+                <span className='roadmap-day__badge'>Day {day.day}</span>
+                <h3 className='roadmap-day__focus'>{day.focus}</h3>
+            </div>
+            <ul className='roadmap-day__tasks'>
+                {day.tasks.map((task, i) => {
+                    const taskId = `day-${day.day}-task-${i}`
+                    const isCompleted = completedTasks.includes(taskId)
+                    return (
+                        <li key={i} className={`roadmap-day__task-item ${isCompleted ? 'roadmap-day__task-item--completed' : ''}`}>
+                            <label className='roadmap-day__task-label'>
+                                <input
+                                    type='checkbox'
+                                    checked={isCompleted}
+                                    onChange={() => toggleTask(reportId, taskId)}
+                                    className='roadmap-day__checkbox-input'
+                                />
+                                <span className='roadmap-day__checkbox-custom'>
+                                    {isCompleted && (
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="checkmark-icon">
+                                            <polyline points="20 6 9 17 4 12" />
+                                        </svg>
+                                    )}
+                                </span>
+                                <span className='roadmap-day__task-text'>{task}</span>
+                            </label>
+                        </li>
+                    )
+                })}
+            </ul>
         </div>
-        <ul className='roadmap-day__tasks'>
-            {day.tasks.map((task, i) => (
-                <li key={i}>
-                    <span className='roadmap-day__bullet' />
-                    {task}
-                </li>
-            ))}
-        </ul>
-    </div>
-)
+    )
+}
 
 // ── Main Component ────────────────────────────────────────────────────────────
 const Interview = () => {
     const [ activeNav, setActiveNav ] = useState('technical')
-    const { report, getReportById, loading, loadingMessage, getResumePdf } = useInterview()
+    const { report, getReportById, loading, loadingMessage, getResumePdf, toggleTask } = useInterview()
     const { interviewId } = useParams()
+    const contentRef = useRef(null)
 
     useEffect(() => {
         if (interviewId) {
             getReportById(interviewId)
         }
     }, [ interviewId ])
+
+    // Reset scroll position of the panel to top when switching tabs
+    useEffect(() => {
+        if (contentRef.current) {
+            contentRef.current.scrollTop = 0
+        }
+    }, [ activeNav ])
 
 
 
@@ -115,7 +154,7 @@ const Interview = () => {
                 <div className='interview-divider' />
 
                 {/* ── Center Content ── */}
-                <main className='interview-content'>
+                <main className='interview-content' ref={contentRef}>
                     {activeNav === 'technical' && (
                         <section>
                             <div className='content-header'>
@@ -152,7 +191,13 @@ const Interview = () => {
                             </div>
                             <div className='roadmap-list'>
                                 {report.preparationPlan.map((day) => (
-                                    <RoadMapDay key={day.day} day={day} />
+                                    <RoadMapDay
+                                        key={day.day}
+                                        day={day}
+                                        completedTasks={report.completedTasks || []}
+                                        toggleTask={toggleTask}
+                                        reportId={report._id}
+                                    />
                                 ))}
                             </div>
                         </section>

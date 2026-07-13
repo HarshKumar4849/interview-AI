@@ -44,3 +44,63 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-thumb:hover {
   background: #ff2d78;
 }
+
+/* Premium Loading Screen */
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #080b10;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(255, 45, 120, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(167, 139, 250, 0.05) 0%, transparent 40%);
+  color: #ffffff;
+  gap: 2rem;
+  padding: 2rem;
+  box-sizing: border-box;
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f3f4f6;
+    letter-spacing: -0.5px;
+    text-align: center;
+    margin: 0;
+    animation: loadingPulse 2s infinite ease-in-out;
+  }
+
+  &::before {
+    content: '';
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, 0.05);
+    border-top: 3px solid #ff2d78;
+    border-right: 3px solid #a78bfa;
+    border-radius: 50%;
+    animation: loadingSpinner 1s linear infinite;
+    box-shadow: 0 0 15px rgba(255, 45, 120, 0.2);
+  }
+}
+
+@keyframes loadingSpinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loadingPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

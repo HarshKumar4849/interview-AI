@@ -33,4 +33,11 @@ interviewRouter.get('/report/:interviewId', authMiddleware.authUser, interviewCo
  */
 interviewRouter.post('/resume/pdf/:interviewReportId', authMiddleware.authUser, interviewController.generateResumePdfController);
 
+/**
+ * @route PATCH /api/interview/report/:interviewId/toggle-task
+ * @desc Toggle task completion and dynamically update match score.
+ * @access private
+ */
+interviewRouter.patch('/report/:interviewId/toggle-task', authMiddleware.authUser, interviewController.toggleTaskController);
+
 module.exports = interviewRouter;

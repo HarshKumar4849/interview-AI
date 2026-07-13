@@ -414,7 +414,7 @@ Never return empty arrays.
     const geminiSchema = convertToGeminiSchema(nativeJsonSchema);
 
     const response = await ai.models.generateContent({
-        model: "models/gemini-3.5-flash",
+        model: "models/gemini-3.1-flash-lite",
         contents: prompt,
         config: {
             responseMimeType: "application/json",
@@ -497,7 +497,7 @@ CRITICAL REQUIREMENT: The generated resume MUST be custom-tailored dedicatedly a
     const geminiSchema = convertToGeminiSchema(nativeJsonSchema);
 
     const response = await ai.models.generateContent({
-        model: "models/gemini-3.5-flash",
+        model: "models/gemini-3.1-flash-lite",
         contents: prompt,
         config: {
             responseMimeType: "application/json",

@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { InterviewContext } from "../interview.context.jsx";
-import { generateInterviewReport, getInterviewReportById, getAllInterviewReports, generateResumePdf } from "../services/interview.api.js";
+import { generateInterviewReport, getInterviewReportById, getAllInterviewReports, generateResumePdf, toggleTask } from "../services/interview.api.js";
 import { AuthContext } from "../../auth/auth.context.jsx";
 
 export const useInterview = () => {
@@ -91,6 +91,19 @@ export const useInterview = () => {
         }
     };
 
+    const toggleTaskHandler = async (interviewId, taskId) => {
+        try {
+            const data = await toggleTask({ interviewId, taskId });
+            const updatedReport = data.interviewReport || data;
+            setReport(updatedReport);
+            setReports(prev => prev.map(rep => rep._id === updatedReport._id ? updatedReport : rep));
+            return updatedReport;
+        } catch (error) {
+            console.error("Failed to toggle task:", error);
+            throw error;
+        }
+    };
+
     return {
         loading,
         loadingMessage,
@@ -99,6 +112,7 @@ export const useInterview = () => {
         generateReport,
         getReportById,
         getResumePdf,
-        fetchReports
+        fetchReports,
+        toggleTask: toggleTaskHandler
     };
-};
+}

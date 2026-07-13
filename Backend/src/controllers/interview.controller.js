@@ -19,6 +19,7 @@ async function generateInterviewReportController(req, res) {
             resume: resumeContent.text,
             selfDescription,
             jobDescription,
+            initialMatchScore: interviewReportByAi.matchScore,
             ...interviewReportByAi   
         });
         res.status(200).json({ interviewReport });
@@ -83,9 +84,59 @@ async function generateResumePdfController(req, res) {
     }
 }
 
+async function toggleTaskController(req, res) {
+    try {
+        const { interviewId } = req.params;
+        const { taskId } = req.body;
+
+        const report = await interviewReportModel.findOne({ _id: interviewId, user: req.user.id });
+        if (!report) {
+            return res.status(404).json({ message: "Interview report not found" });
+        }
+
+        if (report.initialMatchScore === undefined || report.initialMatchScore === null) {
+            report.initialMatchScore = report.matchScore || 0;
+        }
+
+        if (!report.completedTasks) {
+            report.completedTasks = [];
+        }
+
+        const taskIndex = report.completedTasks.indexOf(taskId);
+        if (taskIndex > -1) {
+            report.completedTasks.splice(taskIndex, 1);
+        } else {
+            report.completedTasks.push(taskId);
+        }
+
+        let totalTasks = 0;
+        if (report.preparationPlan) {
+            report.preparationPlan.forEach(day => {
+                if (day.tasks) {
+                    totalTasks += day.tasks.length;
+                }
+            });
+        }
+
+        const completedCount = report.completedTasks.length;
+
+        if (totalTasks > 0) {
+            const initial = report.initialMatchScore;
+            report.matchScore = Math.min(100, Math.round(initial + (completedCount / totalTasks) * (100 - initial)));
+        }
+
+        await report.save();
+        res.status(200).json({ interviewReport: report });
+    } catch (error) {
+        console.error("Error in toggleTaskController:", error);
+        res.status(500).json({ message: "Failed to toggle task" });
+    }
+}
+
 module.exports = {
     generateInterviewReportController,
     getInterviewReportByIdController,
     getAllInterviewReportsController,
-    generateResumePdfController
+    generateResumePdfController,
+    toggleTaskController
 };
