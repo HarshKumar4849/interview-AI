@@ -45,6 +45,38 @@ const Home = () => {
                 <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
             </header>
 
+            {/* Tech Companies Marquee */}
+            <div className='company-marquee'>
+                <p className='company-marquee__subtitle'>Prepped for interviews at</p>
+                <div className='company-marquee__track'>
+                    <div className='company-marquee__content'>
+                        <span>Google</span>
+                        <span>Microsoft</span>
+                        <span>Amazon</span>
+                        <span>Meta</span>
+                        <span>Netflix</span>
+                        <span>Apple</span>
+                        <span>Uber</span>
+                        <span>Airbnb</span>
+                        <span>Stripe</span>
+                        <span>Adobe</span>
+                        <span>NVIDIA</span>
+                        {/* Duplicate for seamless infinite loop */}
+                        <span>Google</span>
+                        <span>Microsoft</span>
+                        <span>Amazon</span>
+                        <span>Meta</span>
+                        <span>Netflix</span>
+                        <span>Apple</span>
+                        <span>Uber</span>
+                        <span>Airbnb</span>
+                        <span>Stripe</span>
+                        <span>Adobe</span>
+                        <span>NVIDIA</span>
+                    </div>
+                </div>
+            </div>
+
             {/* Main Card */}
             <div className='interview-card'>
                 <div className='interview-card__body'>
@@ -110,7 +142,7 @@ const Home = () => {
                                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 16 12 12 8 16" /><line x1="12" y1="12" x2="12" y2="21" /><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" /></svg>
                                     </span>
                                     <p className='dropzone__title'>Click to upload or drag &amp; drop</p>
-                                    <p className='dropzone__subtitle'>PDF or DOCX (Max 5MB)</p>
+                                    <p className='dropzone__subtitle'>PDF, DOCX, DOC, or TXT (Max 5MB)</p>
                                     <input 
                                         ref={resumeInputRef} 
                                         onChange={handleFileChange} 
@@ -118,7 +150,7 @@ const Home = () => {
                                         type='file' 
                                         id='resume' 
                                         name='resume' 
-                                        accept='.pdf,.docx' 
+                                        accept='.pdf,.doc,.docx,.txt' 
                                     />
                                 </label>
                             )}

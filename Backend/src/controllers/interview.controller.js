@@ -1,22 +1,61 @@
 const pdfParse = require('pdf-parse');
+const path = require('path');
+const mammoth = require('mammoth');
 const { generateInterviewReport, generateAtsResumeData } = require('../services/ai.service');
 const { buildResumePdf } = require('../services/pdf.service');
 const interviewReportModel = require('../models/interviewReport.model');
 
+async function extractTextFromFile(file) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const mime = file.mimetype;
+
+    if (ext === '.pdf' || mime === 'application/pdf') {
+        const parsed = await (new pdfParse.PDFParse(new Uint8Array(file.buffer))).getText();
+        return parsed.text || "";
+    }
+
+    if (ext === '.docx' || mime === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        const result = await mammoth.extractRawText({ buffer: file.buffer });
+        return result.value || "";
+    }
+
+    if (ext === '.txt' || mime.startsWith('text/')) {
+        return file.buffer.toString('utf-8');
+    }
+
+    // Fallback for doc and other binary formats: extract printable text characters
+    const rawText = file.buffer.toString('utf-8');
+    const cleanText = rawText.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, ' ').replace(/\s+/g, ' ').trim();
+    
+    if (cleanText.length > 50) {
+        return cleanText;
+    }
+
+    throw new Error(`Unsupported or unreadable file format (${ext || mime})`);
+}
+
 async function generateInterviewReportController(req, res) {
     try {
-        const resumeContent = await (new pdfParse.PDFParse(Uint8Array.from(req.file.buffer))).getText();
+        let resumeText = "";
+        if (req.file) {
+            try {
+                resumeText = await extractTextFromFile(req.file);
+            } catch (err) {
+                console.error("Resume extraction failed:", err);
+                return res.status(400).json({ message: `Failed to parse the uploaded resume: ${err.message}. Please upload a PDF, DOCX, DOC, or TXT file.` });
+            }
+        }
         const { selfDescription, jobDescription } = req.body;
 
         const interviewReportByAi = await generateInterviewReport({
-            resume: resumeContent.text,
+            resume: resumeText,
             selfDescription,
             jobDescription
         });
         const interviewReport = await interviewReportModel.create({
             user: req.user.id,
             title: interviewReportByAi.title || "Interview Report",
-            resume: resumeContent.text,
+            resume: resumeText,
             selfDescription,
             jobDescription,
             initialMatchScore: interviewReportByAi.matchScore,
